@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <style>
+      .content {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+      }
+      .option {
+        width: 50%;
+        height: 100%;
+        float: left;
+        position: relative;
+      }
+      .button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 50%;
+        height: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <div class="control option">
+        <form action="/control">
+          <button class="button">Control</button>
+        </form>
+      </div>
+      <div class="screen option">
+        <form action="/screen">
+          <button class="button">Screen</button>
+        </form>
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script>
+      $(function() {
+      });
+    </script>
+  </body>
+</html>

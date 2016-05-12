@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <style>
+      body { margin: 0; }
+        @-webkit-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+      #video-player {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        background: #000 url('../associated/drp-35th-logo.svg');
+  background-position: center center;
+  background-size: 40%;
+  background-repeat: no-repeat;
+          -webkit-animation-name: fade-in;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-timing-function: ease-in;
+  -webkit-animation-iteration-count: 1;
+      }
+    </style>
+  </head>
+<body>
+    <video id="video-player" poster="">
+      <source class="video" src="" poster="" type="video/mp4">
+    </video>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+    var video = document.getElementById('video-player');
+    socket.on('changeVideo', function(message) {
+        $(".video").attr("src", '/videos/' + message);
+        video.load();
+        video.play();
+    });
+
+    video.addEventListener('ended',function() {
+        /*
+            TODO: Hide video controls
+        */
+        socket.emit('videoEnded');
+        $(".video").attr("src", "");
+        video.load();
+        console.log("Detected video end");
+        
+    });
+    
+    socket.on('stopVideo', function(message) {
+        console.log("stop video called");
+        /*
+            TODO: Hide video controls
+        */
+        socket.emit('hideVideoControls');
+        $(".video").attr("src", "");
+        video.load();
+    });
+    
+    socket.on('pauseVideo', function(message) {
+        console.log("pause video called");
+        video.pause();
+    });
+    
+    socket.on('playVideo', function(message) {
+        console.log("play video called");
+        video.play();
+    });
+</script>
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+</html>
