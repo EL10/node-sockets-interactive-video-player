@@ -73,9 +73,8 @@ var getVideosFromFolder = function() {
         if(fileExtension === 'mp4') {
         return true;
         }
-      } else {
-        return false;
       }
+      return false;
     };
     var filteredFiles = files.filter(isVideo);
       
@@ -84,9 +83,7 @@ var getVideosFromFolder = function() {
       Write text file
       */
       var fileObject = split_file_name(file);
-      console.log('fileobject: ', fileObject);
       var fileName = "section_" + fileObject.section + "-name_" + fileObject.name + ".txt";
-      console.log(fileName);
       /*
       uncomment to write text file for each video */
       fs.writeFile('assets/associated/video_descriptions/' + fileName, 'Insert video description here');
