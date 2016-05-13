@@ -5,6 +5,7 @@ var io = require('socket.io')(http);
 var fs = require('fs');
 var chokidar = require('chokidar');
 var videos = [];
+var config = require('./config.js');
 
 // Host the assets folder
 app.use(express.static('assets'));
@@ -27,8 +28,7 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-// Setup Socket Events
-
+// Default Socket Events
 var defaultSocketEvents = [
   'stopVideo',
   'pauseVideo',
@@ -38,6 +38,10 @@ var defaultSocketEvents = [
   'videoEnded'
 ];
 
+/**
+ * Setup Default Socket Events
+ * @param socket - socket instance
+ */
 var setupDefaultEvents = function(socket) {
     defaultSocketEvents.forEach(function(eventName) {
         socket.on(eventName, function(){
@@ -46,13 +50,18 @@ var setupDefaultEvents = function(socket) {
     });
 };
 
+/**
+ * Setup Socket Listeners and Emitters
+ * @param socket - socket instance
+ */
 io.on('connection', function(socket){
   console.log('User connected');
-  io.emit('files', videos);
   
   socket.on('disconnect', function(){
     console.log('User disconnected');
   });
+
+  io.emit('files', videos);
 
   socket.on('changeVideo', function(video){
     io.emit('changeVideo', video);
@@ -63,7 +72,7 @@ io.on('connection', function(socket){
 
 var getVideosFromFolder = function() {
   var fileList = [];
-  fs.readdir('assets/videos', function (err, files) { // '/' denotes the root folder
+  fs.readdir(config.videoPath, function (err, files) { // '/' denotes the root folder
     if (err) throw err;
 
     // Check if video is mp4
@@ -108,12 +117,12 @@ var getVideosFromFolder = function() {
 getVideosFromFolder();
 
 // Watch files
-var watcher = chokidar.watch('assets/videos', {ignored: /^\./, persistent: true});
+var watcher = chokidar.watch(config.videoPath, {ignored: /^\./, persistent: true});
 watcher
-  .on('add', function(path) {console.log('File', path, 'has been added'); getVideosFromFolder(); })
-  .on('change', function(path) {console.log('File', path, 'has been changed'); getVideosFromFolder(); })
-  .on('unlink', function(path) {console.log('File', path, 'has been removed'); getVideosFromFolder(); })
-  .on('error', function(error) {console.error('Error happened', error);})
+  .on('add', function(path) {console.log('File', path, ' has been added'); getVideosFromFolder(); })
+  .on('change', function(path) {console.log('File', path, ' has been changed'); getVideosFromFolder(); })
+  .on('unlink', function(path) {console.log('File', path, ' has been removed'); getVideosFromFolder(); })
+  .on('error', function(error) {console.error('Error watching files: ', error);})
 
 function split_file_name(filename) {
   var obj = {};
