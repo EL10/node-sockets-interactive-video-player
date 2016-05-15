@@ -1,136 +1,7 @@
-body {
-     padding-top: 102px;   
-}
-ul { margin: 0; padding: 0;}
-.all-projects {
-     display: none;
-}
-.projects-page {
-     display: none;   
-}
-.all-projects-page {
-     display: none;   
-}
-h1 {
-     display: inline-block;
-}
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: #000;
-  width: 100%;
-  color: #fff;
-    height: 85px;
-    z-index: 9;
-}
-.navbar .projects-top-navigation h1 {
-    padding-left: 15px;  
-    margin-bottom: 0;
-}
-.projects-top-navigation button {
-     display: inline-block;
-      background: none;
-  border: 1px solid;
-  padding: 10px;
-    margin: 15px 25px;
-}
-.show-all-projects-button {
-     color: #fff;   
-}
-
-/*
-    Coloured border
-*/
-.colour-border {
-  position: absolute;
-  bottom: 0;
-  align-content: bott;
-  left: 0;
-  height: 10px;
-  width: 100%;   
-}
-.colour-border ul {
-       list-style: none;
-  width: 100%;
-  font-size: 0;
-  height: 10px;
-    position: relative;
-}
-.colour-border ul li {
-    display: inline-block;
-  width: 14.285%;
-  height: 10px;
-    vertical-align: top;
-}
-.colour-border ul li:nth-child(1) {
-  background:#E6007E;
-}
-
-.colour-border ul li:nth-child(2) {
-  background:#862C81;
-}
-
-.colour-border ul li:nth-child(3) {
-  background:#299CD8;
-}
-
-.colour-border ul li:nth-child(4) {
-  background:#78B22B;
-}
-.colour-border ul li:nth-child(5) {
-  background:#FDC300;
-}
-
-.colour-border ul li:nth-child(6) {
-  background:#F7A600;
-}
-
-.colour-border ul li:nth-child(7) {
-  background:#B01920;
-}
-#sections-list.row,#projects-list.row {
-     margin: 0;   
-}
-.section-item {
-     height: 230px !important;   
-}
-.section-item,.project-item {
-  height: 290px;
-  position: relative;
-  min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-bottom: 15px;
-}
-.project-item {
-     margin-bottom: 15px;   
-}
-.section-name,.project-name {
-  position: relative;
-  height: 100%;
-  width: 100%;
-display: -webkit-flex; /* Safari */
-    -webkit-align-items: center; /* Safari 7.0+ */
-    display: flex;
-    align-items: center;
-}
-.project-name {
-    -webkit-perspective: 1000;
-  perspective: 1000;
-  position: relative;
+li:hover {
+  text-decoration: underline;
+  font-weight: 700;
   cursor: pointer;
-}
-.section-inner {
-     width: 100%;
-    text-align: center;
-    color: #fff;
-    font-size: 46px;
-    padding: 15px;
-}
-.section-inner img {
-     display: table !important;
-    margin: 0 auto;
 }
 .play-video-button {
      background: none;
@@ -167,7 +38,6 @@ display: -webkit-flex; /* Safari */
 .project-name,.flipper,.project-front,.project-back {
     width:100%;
     height:290px;
-    /*box-shadow: 1px 10px 10px rgba(0,0,0,.3);*/
 }
 .project-back {
      padding: 15px;   

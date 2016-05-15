@@ -7,224 +7,79 @@
 </head>
 <body ontouchstart="">
 <div class="container-fluid">
-    <nav class="navbar">
-    <div class="projects-top-navigation"><h1>All Sections | <a class="show-all-projects-button">All Projects</a></h1></div>
-    <div class="colour-border">
-        <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-    </div>
-    </nav>
-    <div class="sections">
-        <div id="sections-list" class="row"></div>
-    </div>
-    <div class="projects-page">
-        <div id="projects-list" class="row"></div>
-    </div>
-    <div class="all-projects-page">
-        <div id="all-projects-list" class="row"></div>
-    </div>
+    <ul id="video-list"></ul>
 </div>
 <div class="video-control-container">
     <div class="stop-video-control">
-    <img class="stop-icon" src="/associated/Stop.png"/>
-    Stop Video
+        <img class="stop-icon" src="/associated/Stop.png"/>
+        Stop Video
     </div>
     <div class="pause-video-control">
-    <img class="pause-icon" src="/associated/Pause.png"/>
-    Pause Video
+        <img class="pause-icon" src="/associated/Pause.png"/>
+        Pause Video
     </div>
     <div class="play-video-control">
-    <img class="play-icon" src="/associated/Play.png"/>
-    Play Video
+        <img class="play-icon" src="/associated/Play.png"/>
+        Play Video
     </div>
 </div>
 
 </body>
 <script src="/socket.io/socket.io.js"></script>
-<script>
-var backButton = '<button class="back-button" onClick="showSections()">Back</button>';
-var homeButton = '<button class="back-button pull-right" onClick="showSections()">Home</button>';
-    
-  var socket = io();
-  var sections = [];
+<script>  
+var socket = io();
 
-    socket.on('files', function (files){
-        files.forEach(function(file) {
-            sections.push(file.section);
-        });
-        sections = ArrNoDupe(sections);
-        
-        renderSections(sections);
-        renderProjects(sections, files);
-        renderAllProjects(sections, files);
-        $('.projects-page').fadeOut(1000);
-        $('.sections').show();
-    });
+socket.on('files', function (files){
+    renderVideoList(files);
+});
 
-    socket.on('add', function(message) { console.log('add: '+message); });
+socket.on('add', function(message) { console.log('add: '+message); });
+
+socket.on('videoEnded', function(message) {
+    $('.video-control-container').fadeOut(1000);
+});
     
-    socket.on('videoEnded', function(message) {
-        $('.video-control-container').fadeOut(1000);
-    });
-    socket.on('showVideoControls', function(message) {
-        $('.video-control-container').fadeIn(1000);
-    });
-    
-function renderSections(sections) {
-    $('.projects-top-navigation').html("<h1>All Sections | <a class=\'show-all-projects-button\'>All Projects</a></h1>");
+var renderVideoList = function(files) {
     var html = '';
-    sections.forEach(function(section){
-        html += '<div class="section-item col-xs-3"><div class="section-name ' + section + '-section-item" rel="'+section+'"><div class="section-inner"><img class="img-responsive" src="http://placehold.it/400x400" /></div></div></div>';
+    files.forEach(function(file) {
+        html += createListitem(file);
     });
-    document.getElementById('sections-list').innerHTML = html;
-    var sectionItem =document.querySelectorAll('.section-name');
-    for(var i=0;i<sectionItem.length;i++){
-    sectionItem[i].addEventListener('click',showProject);
+    document.getElementById('video-list').innerHTML = html;
+    var lis = document.getElementById("video-list").getElementsByTagName('li');
+    for (var i=0; i< lis.length; i+=1) {
+        lis[i].addEventListener('click', changeVideo, false);
     }
-}
-function renderProjects(sections, files) {
-    var files_in_section = [];
-    sections.forEach(function(section) {
-        files.forEach(function(file) {
-            if(file.section === section) {
-                files_in_section.push(file);
-            }
-        });
-    });
-    var html = '';
-    sections.forEach(function(section){
-        html += '<div class="all-projects '+ section + '-projects">';
-        files.forEach(function(file){
-            if(file.section === section) {
-                var colour = randomHex();
-                html += '<div class="project-item col-xs-4"><div class="project-name" aria-haspopup="true" rel="section_'+file.section+'-name_'+file.name+'.'+file.extension+'" ><div class="flipper"><div class="project-front ' + section + '-project-item" style="background: url(\'http://placehold.it/400x400\');"><div class="project-title ' + section + '-bg">' + file.name + '</div></div><div class="project-back" style="background: #333;"><div class="project-description" rel="section_'+file.section+'-name_'+file.name+'.txt"></div><br><button class="play-video-button" rel="section_'+file.section+'-name_'+file.name+'.'+file.extension+'">Play Video</button></div></div></div></div>';
-            }
-        });
-        html += '</div>';
-    });
-   document.getElementById('projects-list').innerHTML = html;
-   getProjectDescriptions();
-    /*var projectItem =document.querySelectorAll('.project-name');
-    for(var i=0;i<projectItem.length;i++){
-    projectItem[i].addEventListener('click',changeVideo);
-    }*/
-    $('.play-video-button').on('click', changeVideo);
-    $('.show-all-projects-button').on('click', showAllProjects);
-    
-}
-function renderAllProjects(sections, files) {
-    var files_in_section = [];
-    sections.forEach(function(section) {
-        files.forEach(function(file) {
-            if(file.section === section) {
-                files_in_section.push(file);
-            }
-        });
-    });
-    var html = '';
-    html += '<div class="all-projects-container">';
-    sections.forEach(function(section){
-        
-        files.forEach(function(file){
-            if(file.section === section) {
-                var colour = randomHex();
-                html += '<div class="project-item col-xs-4"><div class="project-name" aria-haspopup="true" rel="section_'+file.section+'-name_'+file.name+'.'+file.extension+'" ><div class="flipper"><div class="project-front ' + section + '-project-item" style="background: url(\'http://placehold.it/400x400\');"><div class="project-title ' + section + '-bg">' + file.name + '</div></div><div class="project-back" style="background: #333;"><div class="project-description" rel="section_'+file.section+'-name_'+file.name+'.txt"></div><br><button class="play-video-button" rel="section_'+file.section+'-name_'+file.name+'.'+file.extension+'">Play Video</button></div></div></div></div>';
-            }
-        });
-        
-    });
-    html += '</div>';
-   document.getElementById('all-projects-list').innerHTML = html;
-   getProjectDescriptions();
-    $('.play-video-button').on('click', changeVideo);
-    $('.show-all-projects-button').on('click', showAllProjects);
-}
-function showProject() {
-    var category = this.getAttribute("rel");
-    $('.projects-top-navigation').html(backButton + "<h1>" + category + " Projects</h1>");
-        $('.projects-page').show();
-     $('.sections').hide();
-      $('.all-projects').hide();
-      
-    // Fade in project page
-    var selector = "." + category + "-projects";
-      $(selector).fadeIn(1000);
-    $('.show-all-projects-button').on('click', showAllProjects);
-}
-function showAllProjects() {
-$('.projects-top-navigation').html(backButton + "<h1>All Projects</h1>");
-    $('.projects-page, .sections, .all-projects').hide();
- $('.all-projects-page').fadeIn(1000);
+};
 
-}
-function getProjectDescriptions() {
-    $('.project-description').each(function() {
-        var projectDescription = '';
-        var thing = $(this);
-        $.get("/associated/video_descriptions/"+this.getAttribute("rel"), function( data ){
-            console.log(data);
-            projectDescription = "<p>" + data + "</p>";
-            thing.html(projectDescription);
-        });
-    });
-    
-    //return projectDescription;
-}
-function ArrNoDupe(a) {
-    var temp = {};
-    for (var i = 0; i < a.length; i++)
-        temp[a[i]] = true;
-    var r = [];
-    for (var k in temp)
-        r.push(k);
-    return r;
-}
-function changeVideo() {
-    socket.emit('showVideoControls');
+var createListitem = function(string) {
+    return '<li rel="' + string + '">' + string + '</li>\n';
+};
+
+var changeVideo = function() {
+  $('.video-control-container').fadeIn(1000);
   socket.emit('changeVideo', this.getAttribute('rel'));
 }
-   
-function showSections() {
-  $('.projects-page, .all-projects-page').hide();
-    $('.projects-top-navigation').html("<h1>All Sections | <a class=\'show-all-projects-button\'>All Projects</a></h1>");
-  $('.sections').fadeIn(1000);
-    $('.show-all-projects-button').on('click', showAllProjects);
-}
-
-function randomHex () {
-  return '#'+Math.floor(Math.random()*16777215).toString(16);
-}
-function stopVideo() {
+var stopVideo = function() {
+    $('.video-control-container').fadeOut(1000);
     socket.emit('stopVideo');
 }
-function pauseVideo() {
+var pauseVideo = function() {
     socket.emit('pauseVideo');
 }
-function playVideo() {
+var playVideo = function() {
     socket.emit('playVideo');
 }
+
 $(document).ready(function() {
     $('.stop-video-control').on('click', function() {
-        console.log("stop video called");
         stopVideo();
     });
     $('.pause-video-control').on('click', function() {
-        console.log("pause video called");
         pauseVideo();
     });
     $('.play-video-control').on('click', function() {
-        console.log("play video called");
         playVideo();
     });
-$('.show-all-projects-button').on('click', showAllProjects);
-     
 });
 </script>
 </html>

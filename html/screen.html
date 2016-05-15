@@ -3,27 +3,27 @@
     <style>
       body { margin: 0; }
         @-webkit-keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
       #video-player {
         position: absolute;
         width: 100%;
         top: 0;
         bottom: 0;
         height: 100%;
-        background: #000 url('../associated/drp-35th-logo.svg');
-  background-position: center center;
-  background-size: 40%;
-  background-repeat: no-repeat;
-          -webkit-animation-name: fade-in;
-  -webkit-animation-duration: 3s;
-  -webkit-animation-timing-function: ease-in;
-  -webkit-animation-iteration-count: 1;
+        background: #000;
+        background-position: center center;
+        background-size: 40%;
+        background-repeat: no-repeat;
+        -webkit-animation-name: fade-in;
+        -webkit-animation-duration: 3s;
+        -webkit-animation-timing-function: ease-in;
+        -webkit-animation-iteration-count: 1;
       }
     </style>
   </head>
@@ -43,22 +43,14 @@
     });
 
     video.addEventListener('ended',function() {
-        /*
-            TODO: Hide video controls
-        */
         socket.emit('videoEnded');
         $(".video").attr("src", "");
         video.load();
-        console.log("Detected video end");
-        
+        console.log("Video end");
     });
     
     socket.on('stopVideo', function(message) {
         console.log("stop video called");
-        /*
-            TODO: Hide video controls
-        */
-        socket.emit('hideVideoControls');
         $(".video").attr("src", "");
         video.load();
     });

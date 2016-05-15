@@ -11,7 +11,6 @@ var config = require('./config.js');
 app.use(express.static('assets'));
 
 // Setup Routes
-
 app.get('/', function(req, res){
   res.sendfile('html/index.html');
 });
@@ -70,9 +69,13 @@ io.on('connection', function(socket){
   setupDefaultEvents(socket);
 });
 
+/**
+ * Read videos from folder
+ */
 var getVideosFromFolder = function() {
   var fileList = [];
   fs.readdir(config.videoPath, function (err, files) { // '/' denotes the root folder
+  
     if (err) throw err;
 
     // Check if video is mp4
@@ -85,31 +88,20 @@ var getVideosFromFolder = function() {
       }
       return false;
     };
+    
+    // Push only video files into new array
     var filteredFiles = files.filter(isVideo);
       
     filteredFiles.forEach( function (file) {
-      /*
-      Write text file
-      */
-      var fileObject = split_file_name(file);
-      var fileName = "section_" + fileObject.section + "-name_" + fileObject.name + ".txt";
-      /*
-      uncomment to write text file for each video */
-      fs.writeFile('assets/associated/video_descriptions/' + fileName, 'Insert video description here');
-
-
       fs.lstat('/'+ file, function(err, stats) {
-      if (!err && stats.isDirectory()) { //conditing for identifying folders
-        console.log('directory: '+file);
-      }
-      else {
-        if(file.indexOf('section_') > -1) {
-          fileList.push(split_file_name(file));
+        if (!err && stats.isDirectory()) {
+          console.log('directory: '+file);
         }
-      }
+        else {
+            fileList.push(file);
+        }
       });
     });
-  
   });
   videos = fileList;
   io.emit('files', videos);
@@ -124,26 +116,6 @@ watcher
   .on('unlink', function(path) {console.log('File', path, ' has been removed'); getVideosFromFolder(); })
   .on('error', function(error) {console.error('Error watching files: ', error);})
 
-function split_file_name(filename) {
-  var obj = {};
-  var arr = filename.split("-").map( function (val) {
-      if(val.indexOf('section') > -1){
-        val = val.replace('section_', '');
-        var result = {'section': val}
-        obj.section = val;
-        return result;
-      }
-      if(val.indexOf('name') > -1){
-        var re = /(?:\.([^.]+))?$/;
-        var ext = re.exec(val)[1]; 
-        val = val.replace('name_', '');
-        val = val.replace('.'+ext, '');
-        var result = {'name': val, 'extension': ext}
-        obj.name = val;
-        obj.extension = ext;
-        return result;
-      }
-    }
-  );
-  return obj;
-}
+var createFileObject = function (filename) {
+  
+};
