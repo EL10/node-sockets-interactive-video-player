@@ -1,4 +1,4 @@
-# Node and Sockets interactive video player
+# Node and Sockets Interactive Video Player
 Simple interactive video player built on Node, Express and Sockets.IO.
 Reads videos from the file system, generating a list of videos which can be played on a screen
 
